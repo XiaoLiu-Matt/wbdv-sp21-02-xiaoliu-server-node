@@ -2,6 +2,10 @@
 const express = require('express')
 const app = express()
 
+const mongoose = require('mongoose');
+mongoose.connect('mongodb+srv://admin:liuxiao123@cluster0.nqnao.mongodb.net/data?retryWrites=true&w=majority',
+    {useNewUrlParser: true, useUnifiedTopology: true});
+
 // Configures CORS
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -12,14 +16,16 @@ app.use(function (req, res, next) {
     next();
 });
 
+var bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+require('./controllers/quizzes-controller')(app)
+require('./controllers/questions-controller')(app)
+require('./controllers/quiz-attempts-controller')(app)
 
-const demos = require('./controllers/demos-controller')
-demos(app)
 
 // const quizzesController = require('./controllers/quizzes-controller')
 // quizzesController(app)
 
-require('./controllers/quizzes-controller')(app)
-require('./controllers/questions-controller')(app)
 
 app.listen(process.env.PORT || 4000)
